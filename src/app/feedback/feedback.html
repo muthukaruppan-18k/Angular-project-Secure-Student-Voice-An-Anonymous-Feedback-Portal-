@@ -1,0 +1,87 @@
+<div style="max-width: 600px; margin: auto; padding: 20px; font-family: sans-serif;">
+
+  <!-- TOP NAV -->
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #333; padding: 10px; color: white; border-radius: 5px;">
+    <span>College Portal</span>
+    <button (click)="toggleView()" style="background: #f44336; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+      Switch to {{ isAdminView ? 'Student' : 'Staff' }} View
+    </button>
+  </div>
+
+  <!-- STUDENT VIEW -->
+  <div *ngIf="!isAdminView">
+    <h2 style="color: #1976d2;">📝 Submit Feedback (Anonymous)</h2>
+    <div style="padding: 20px; max-width: 500px; margin: 40px auto; font-family: Arial; border: 1px solid #ccc; border-radius: 10px; box-shadow: 2px 2px 10px #eee;">
+      <h2 style="color: #d32f2f; text-align: center;">🔒 Anonymous Help-Desk</h2>
+      <p style="text-align: center; color: #666;">Your identity is safe. We do not collect names.</p>
+
+      <label><b>Select Category:</b></label><br>
+      <select #category style="width: 100%; padding: 10px; margin: 10px 0;">
+        <option>Canteen Issues</option>
+        <option>Classroom Repairs</option>
+        <option>Lab Software</option>
+        <option>Hostel Safety</option>
+      </select>
+
+      <label><b>Your Feedback:</b></label><br>
+      <textarea #detail placeholder="Be honest, don't worry about names..." style="width: 100%; height: 100px; padding: 10px; border-radius: 5px;"></textarea>
+
+      <button (click)="submitForm(category.value, detail.value)"
+        style="background: #1976d2; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; margin-top: 15px; border-radius: 5px; font-weight: bold;">
+        SUBMIT ANONYMOUSLY
+      </button>
+
+      <div *ngIf="feedbacks.length > 0" style="margin-top: 30px;">
+        <h3>Recent Reports (Local View)</h3>
+        <div *ngFor="let f of feedbacks" style="background: #f9f9f9; padding: 10px; margin-bottom: 10px; border-left: 5px solid #d32f2f;">
+          <strong>{{f.category}}</strong>: {{f.text}} <br>
+          <small style="color: gray;">{{f.date}}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAFF VIEW -->
+  <div *ngIf="isAdminView">
+    <h2 style="color: #4caf50;">👨‍🏫 Staff Dashboard</h2>
+    <p>Logged in as: <b>Authorized Personnel</b></p>
+
+    <!-- DASHBOARD SUMMARY -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <div style="background: #eee; padding: 10px; flex: 1; text-align: center;">Total: {{feedbacks.length}}</div>
+      <div style="background: #e8f5e9; padding: 10px; flex: 1; text-align: center;">Replied: {{feedbacks.length}}</div>
+    </div>
+
+    <h3>Recent Reports & Staff Replies</h3>
+    <div *ngFor="let f of feedbacks; let i = index" style="background: #f9f9f9; padding: 15px; margin-bottom: 20px; border-left: 5px solid #d32f2f; border-radius: 5px;">
+
+      <!-- Student Feedback -->
+      <strong>{{f.category}}</strong>: {{f.text}} <br>
+      <small style="color: gray;">{{f.date}}</small>
+
+      <!-- Staff Replies Display -->
+      <div *ngFor="let r of f.replies" style="margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 5px; border-left: 3px solid #1976d2;">
+        <b style="color: #1976d2;">Reply from {{r.name}} ({{r.hostel}}):</b><br>
+        {{r.message}} <br>
+        <small style="color: gray;">{{r.date}}</small>
+      </div>
+
+      <!-- Add Reply Form -->
+      <div style="margin-top: 15px; background: #fff; padding: 10px; border: 1px dashed #ccc;">
+        <p style="font-size: 12px; margin: 0 0 5px 0;"><b>Staff Action:</b></p>
+
+        <input #sName placeholder="Staff Name" style="width: 45%; margin-right: 5%; padding: 5px;">
+
+        <input #hName placeholder="Hostel Name (e.g. Boys Hostel A)" style="width: 45%; padding: 5px;"><br>
+
+        <textarea #sMsg placeholder="Write reply to student..." style="width: 100%; margin-top: 5px; height: 50px; padding: 5px;"></textarea>
+
+        <button (click)="submitReply(i, sName.value, hName.value, sMsg.value)"
+          style="background: #4caf50; color: white; border: none; padding: 8px; cursor: pointer; margin-top: 5px; width: 100%; font-weight: bold;">
+          Post Reply
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
